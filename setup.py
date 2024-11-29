@@ -12,13 +12,11 @@ import sys
 import warnings
 from typing import List, Optional
 
-import pip
+# import pip
 
-pip.main(['install', '-r', 'requirements.txt'])
+# pip.main(['install', '-r', 'requirements.txt'])
 
-import torch
 from setuptools import find_packages, setup
-from torch.utils.cpp_extension import CppExtension, CUDA_HOME, CUDAExtension
 
 
 def get_existing_ccbin(nvcc_args: List[str]) -> Optional[str]:
@@ -40,6 +38,8 @@ def get_existing_ccbin(nvcc_args: List[str]) -> Optional[str]:
 
 
 def get_extensions():
+    import torch
+    from torch.utils.cpp_extension import CppExtension, CUDA_HOME, CUDAExtension
     no_extension = os.getenv("PYTORCH3D_NO_EXTENSION", "0") == "1"
     if no_extension:
         msg = "SKIPPING EXTENSION BUILD. PYTORCH3D WILL NOT WORK!"
@@ -134,15 +134,6 @@ def get_extensions():
 __version__ = runpy.run_path("pytorch3d/__init__.py")["__version__"]
 
 
-if os.getenv("PYTORCH3D_NO_NINJA", "0") == "1":
-
-    class BuildExtension(torch.utils.cpp_extension.BuildExtension):
-        def __init__(self, *args, **kwargs):
-            super().__init__(use_ninja=False, *args, **kwargs)
-
-else:
-    BuildExtension = torch.utils.cpp_extension.BuildExtension
-
 trainer = "pytorch3d.implicitron_trainer"
 
 setup(
@@ -157,7 +148,7 @@ setup(
     )
     + [trainer],
     package_dir={trainer: "projects/implicitron_trainer"},
-    install_requires=["iopath"],
+    install_requires=["iopath, torch"],
     extras_require={
         "all": ["matplotlib", "tqdm>4.29.0", "imageio", "ipywidgets"],
         "dev": ["flake8", "usort"],
@@ -178,7 +169,6 @@ setup(
         ]
     },
     ext_modules=get_extensions(),
-    cmdclass={"build_ext": BuildExtension},
     package_data={
         "": ["*.json"],
     },
