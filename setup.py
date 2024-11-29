@@ -12,6 +12,10 @@ import sys
 import warnings
 from typing import List, Optional
 
+import pip
+
+pip.main(['install', '-r', 'requirements.txt'])
+
 import torch
 from setuptools import find_packages, setup
 from torch.utils.cpp_extension import CppExtension, CUDA_HOME, CUDAExtension
