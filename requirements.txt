@@ -1,3 +1,1 @@
-torch==2.4.1 
-torchvision==0.19.1 
-torchaudio==2.4.1
+https://developer.download.nvidia.com/compute/redist/jp/v60dp/pytorch/torch-2.2.0a0+6a974be.nv23.11-cp310-cp310-linux_aarch64.whl
